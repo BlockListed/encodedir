@@ -45,6 +45,8 @@ dist: build_release
 	@mkdir ./pkg/$(NAME)-$(VERSION)/files
 	@cp target/release/$(EXEC) ./pkg/$(NAME)-$(VERSION)/files/
 
+	@cp LICENSE ./pkg/$(NAME)-$(VERSION)/
+
 	@tar -czf ./pkg/$(NAME)-$(VERSION).tar.gz ./pkg/$(NAME)-$(VERSION)
 	@echo "Cleaning up"
 	@rm -rf ./pkg/$(NAME)-$(VERSION)
