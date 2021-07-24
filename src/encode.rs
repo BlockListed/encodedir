@@ -38,8 +38,6 @@ pub fn encode(files: Vec<String>, cmd_args: &str) {
         ffmpeg_cmd.push_str(name.as_str());
         println!("Ffmpeg command: ffmpeg {}", ffmpeg_cmd);
 
-        let argsiter = ffmpeg_cmd.as_str().split(" ");
-
         let _command = Command::new("/usr/bin/ffmpeg")
             .args(ffmpeg_cmd.as_str().split(" "))
             .stdout(std::process::Stdio::inherit())
