@@ -1,4 +1,4 @@
-VERSION=1.0.0
+VERSION=1.0.1
 NAME=encodedir
 EXEC=encodedir
 PREFIX=$(HOME)/.local
@@ -47,6 +47,6 @@ dist: build_release
 
 	@cp LICENSE ./pkg/$(NAME)-$(VERSION)/
 
-	@tar -czf ./pkg/$(NAME)-$(VERSION).tar.gz ./pkg/$(NAME)-$(VERSION)
+	@cd ./pkg && tar -czf ./$(NAME)-$(VERSION).tar.gz ./$(NAME)-$(VERSION)
 	@echo "Cleaning up"
 	@rm -rf ./pkg/$(NAME)-$(VERSION)
