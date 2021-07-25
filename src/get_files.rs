@@ -16,13 +16,14 @@
 /along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/*
+    TODO:
+    * 
+*/
+
 use std::fs::read_dir;
 
 pub fn get_files(p: &str, filetypes: &Vec<String>) -> Vec<String> {
-    /*
-        TODO:
-        * 
-    */
     let mut paths: Vec<String> = vec![];
     let dirdata: Vec<Result<std::fs::DirEntry, std::io::Error>> = read_dir(p).unwrap().collect();
 
