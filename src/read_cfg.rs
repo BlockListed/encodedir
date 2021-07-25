@@ -47,19 +47,11 @@ fn create_config(p: &str) {
 
 
 pub fn get_config() -> Config {
-    // Gpl warning, for when no existing config is detected
-    let gplwarn = "Encodedir  Copyright (C) 2021  BlockListed
-This program comes with ABSOLUTELY NO WARRANTY; for details type `encodedir --warranty'.
-This is free software, and you are welcome to redistribute it
-under certain conditions; type `encodedir --distribute' for details.";
-
-
     let home_dir = std::env::var("HOME").unwrap();
     let mut config_path= String::from(home_dir);
     config_path.push_str("/.config/encodedir.toml");
     if ! (path::Path::new(config_path.as_str()).exists()) {
         create_config(config_path.as_str());
-        println!("{}", gplwarn)
     }
 
     // This mess just parses a toml file

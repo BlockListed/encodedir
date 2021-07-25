@@ -36,9 +36,13 @@ under certain conditions; type `show c' for details.
         * Add command to show appropriate parts of GPL v3
     */
 
-    let help = "
+    let help = " 
+Encodedir  Copyright (C) 2021  BlockListed
+This program comes with ABSOLUTELY NO WARRANTY; for details type `encodedir --warranty'.
+This is free software, and you are welcome to redistribute it
+under certain conditions; type `encodedir --distribute' for details.
+
 Usage:
-    encodedir --warranty | --distribute - Licensing information
     encodedir [Path to directory] - Encode directory
     
     Additional configuration can be done in ~/.config/encodedir.toml! (Generated after first run))\n";
