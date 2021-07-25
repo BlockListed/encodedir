@@ -1,7 +1,7 @@
 # LINUX ONLY
 
 # Encodedir
-Encode a directory using ffmpeg.
+Encode a directory using the systems ffmpeg.
 
 # Install
 * Make sure ffmpeg is installed on your system.
