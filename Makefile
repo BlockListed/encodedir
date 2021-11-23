@@ -43,6 +43,7 @@ dist: build_release
 
 	@mkdir ./pkg/$(NAME)-$(VERSION)/files
 	@cp target/release/$(EXEC) ./pkg/$(NAME)-$(VERSION)/files/
+	@strip ./pkg/$(NAME)-$(VERSION)/files/$(EXEC)
 
 	@cp LICENSE ./pkg/$(NAME)-$(VERSION)/
 
