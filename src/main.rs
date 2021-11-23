@@ -19,6 +19,11 @@ mod read_cfg;
 mod get_files;
 mod encode;
 
+/*
+    TODO:
+    * 
+*/
+
 fn main() {
     /*
         TODO:
@@ -36,12 +41,20 @@ Usage:
     encodedir [Path to directory]
     
     Additional configuration can be done in ~/.config/encodedir.toml! (Generated after first run))\n";
+    let gplwarranty = "This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.";
+    let gpldistribute = "This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.";
 
     let config = read_cfg::get_config();
 
     let args: Vec<String> = std::env::args().collect();
     if args.len() != 2 {
-        print!("Please give 2 arguments \n{}", help);
+        print!("Please give 1 arguments \n{}", help);
         return;
     }
 
@@ -49,6 +62,12 @@ Usage:
 
     if patharg == "--help" {
         println!("{}", help);
+        return;
+    } else if patharg == "--warranty" {
+        println!("{}", gplwarranty);
+        return;
+    } else if patharg == "--distribute" {
+        println!("{}", gplwarranty);
         return;
     }
 

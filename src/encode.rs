@@ -16,15 +16,16 @@
 /along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/*
+    TODO:
+    *
+*/
+
 use std::path::Path;
 use std::fs::create_dir;
 use std::process::Command;
 
 pub fn encode(files: Vec<String>, cmd_args: &str) {
-    /*
-        TODO:
-        *
-    */
     if ! (Path::new("./encoded").is_dir()) {
         create_dir("./encoded").unwrap();
     }
