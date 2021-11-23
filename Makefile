@@ -1,4 +1,3 @@
-CC=cargo
 VERSION=1.0.0
 NAME=encodedir
 EXEC=encodedir
