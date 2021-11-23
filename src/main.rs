@@ -38,7 +38,8 @@ under certain conditions; type `show c' for details.
 
     let help = "
 Usage:
-    encodedir [Path to directory]
+    encodedir --warranty | --distribute - Licensing information
+    encodedir [Path to directory] - Encode directory
     
     Additional configuration can be done in ~/.config/encodedir.toml! (Generated after first run))\n";
     let gplwarranty = "This program is distributed in the hope that it will be useful,
