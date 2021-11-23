@@ -13,6 +13,6 @@ Encode a directory using ffmpeg.
 * Use with `encodedir [Path to directory]`.
 
 # Configuration
-* The config file is location at $HOME/.config/encodedir.toml (AKA ~/.config/encodedir.toml).
+* The config file is location at `$HOME/.config/encodedir.toml` (AKA `~/.config/encodedir.toml`).
   * Configure command args (Like switching from nvidia nvenc to vaapi or cpu encoding).
   * Configure what files encodedir sees as video files, incase you don't have your files in a mkv, mp4 or mov container.
