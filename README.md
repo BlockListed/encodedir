@@ -1,5 +1,4 @@
 # TODO
-* Setup meson (ETA 1 Week)
 * Create package, so you don't have to compile everything yourself (ETA 1 Week)
 
 # Encodedir
@@ -15,4 +14,4 @@ Encode a directory using ffmpeg.
 # Configuration
 * The config file is location at `$HOME/.config/encodedir.toml` (AKA `~/.config/encodedir.toml`).
   * Configure command args (Like switching from nvidia nvenc to vaapi or cpu encoding).
-  * Configure what files encodedir sees as video files, incase you don't have your files in a mkv, mp4 or mov container.
+  * Configure what files encodedir sees as video files, incase you don't have your files in an MKV, MP4 or MOV container.
