@@ -11,7 +11,7 @@ Encode a directory using ffmpeg.
 * If your shell can't find it, that probably means the default binary location (~/.local/bin) isn't in your path.
  * If this is the case please either add the location to your path or run with `~/.local/bin/encodedir`.
 ## Notes
-* The default config use hevc_nvenc as the encode. If your system doesn't have an nvidia gpu with nvenc, edit the config file to use an encode like hevc_vaapi or just the cpu encoder (libx265).
+* The default config use hevc_nvenc as the encoder. If your system doesn't have an nvidia gpu with nvenc, edit the config file to use an encoder like hevc_vaapi or just the cpu encoder (libx265).
 
 # Install from source
 * Install a rust toolchain for your system. (Only linux is tested and I probably won't add config locations that work with windows for a while).
