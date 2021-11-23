@@ -47,6 +47,11 @@ Usage:
 
     let patharg = args[1].as_str();
 
+    if patharg == "--help" {
+        println!("{}", help);
+        return;
+    }
+
     let path = std::path::Path::new(patharg);
     if ! (path.exists()) {
         print!("Path doesn't exist \n{}", help);
