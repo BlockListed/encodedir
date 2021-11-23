@@ -16,9 +16,15 @@
 /along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/*
+    TODO:
+    * 
+*/
+
+use std::io;
+use std::io::prelude::*;
+
 fn getinput(p: &str) -> Option<String> {
-    use std::io;
-    use std::io::prelude::*;
     let mut input: String = String::new();
 
     print!("{}", p);
