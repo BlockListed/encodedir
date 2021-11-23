@@ -67,7 +67,7 @@ the Free Software Foundation, either version 3 of the License, or
         println!("{}", gplwarranty);
         return;
     } else if patharg == "--distribute" {
-        println!("{}", gplwarranty);
+        println!("{}", gpldistribute);
         return;
     }
 
