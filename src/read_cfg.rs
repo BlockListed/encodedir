@@ -18,7 +18,7 @@
 
 /*
     TODO:
-    * 
+    * Add features to overwrite current config
 */
 
 use std::path;
@@ -34,11 +34,11 @@ pub struct Config {
     pub ftypes: Vec<String>
 }
 
-// Function to create a new config
+// Function to create a new default config
 fn create_config(p: &str) {
     let mut f = File::create(p).unwrap();
     let data: Config = Config {
-        command_args: "-y -i {} -c:v hevc_nvenc -rc constqp -qmin 10 -qmax 35 -f mp4 ".to_string(),
+        command_args: "-y -i {} -c:v hevc_nvenc -rc vbr -b:v 3M -f mp4 ".to_string(),
         ftypes: vec!["mp4".to_string(), "mkv".to_string(), "mov".to_string()]
     };
     let tomldata = toml::to_string_pretty(&data).unwrap();
