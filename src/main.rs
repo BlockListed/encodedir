@@ -55,7 +55,7 @@ the Free Software Foundation, either version 3 of the License, or
 
     let args: Vec<String> = std::env::args().collect();
     if args.len() != 2 {
-        print!("Please give 1 arguments \n{}", help);
+        print!("Please give 1 argument\n{}", help);
         return;
     }
 
