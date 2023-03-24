@@ -18,7 +18,7 @@
 
 /*
     TODO:
-    * 
+    *
 */
 
 use std::fs::read_dir;
@@ -27,26 +27,25 @@ pub fn get_files(p: &str, filetypes: &Vec<String>) -> Vec<String> {
     let mut paths: Vec<String> = vec![];
     let dirdata: Vec<Result<std::fs::DirEntry, std::io::Error>> = read_dir(p).unwrap().collect();
 
-    for i in dirdata.iter() {
-        let fi: &std::fs::DirEntry = i.as_ref().unwrap();
-        let strpath: String = String::from(fi.path().as_path().to_str().unwrap());
-        if fi.path().as_path().is_dir() {
-            paths.append(&mut get_files(strpath.as_str(), &filetypes));
+    for i in dirdata {
+        let tmp = i.unwrap().path();
+        let fi = tmp.as_path();
+        let strpath: String = String::from(fi.to_str().unwrap());
+        if fi.is_dir() {
+            paths.append(&mut get_files(strpath.as_str(), filetypes));
             continue;
         }
-        let extension: String = String::from(fi.path().as_path().extension().unwrap().to_str().unwrap());
-        if extension == "" {
+        let extension: String =
+            String::from(fi.extension().unwrap().to_str().unwrap());
+        if extension.is_empty() {
             continue;
         }
 
-        if filetypes.iter().any(|v| v==&extension) {
-            let mut path: Vec<String> = vec![strpath];
-            paths.append(&mut path);
-            continue;
-        } else {
-            continue;
+        if filetypes.iter().any(|v| v == &extension) {
+            paths.push(strpath);
         }
+        continue;
     }
-    
-    return paths;
+
+    paths
 }
