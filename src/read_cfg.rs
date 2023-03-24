@@ -32,8 +32,8 @@ pub struct Config {
 // Function to create a new config
 fn create_config(p: &str) {
     let mut f = File::create(p).unwrap();
-    let data: Config = Config {
-        command_args: [
+    let data = toml::toml! {
+        command_args = [
             "-y",
             "-i",
             "{}",
@@ -48,10 +48,12 @@ fn create_config(p: &str) {
             "-f",
             "mp4",
         ]
-        .iter()
-        .map(|x| str::to_owned(x))
-        .collect(),
-        ftypes: vec!["mp4".to_string(), "mkv".to_string(), "mov".to_string()],
+
+        ftypes = [
+            "mp4",
+            "mkv",
+            "mov",
+        ]
     };
     let tomldata = toml::to_string_pretty(&data).unwrap();
     writeln!(f, "{}", tomldata.as_str()).unwrap();
