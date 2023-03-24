@@ -57,7 +57,6 @@ pub fn encode(files: Vec<String>, cmd_args: &[&str]) {
     for i in files {
         let mut args = slice_of_str_to_vec_of_cow(cmd_args);
         replace_in_vec(&mut args, "{}", &i);
-        println!("{}", i);
         args.push(create_name(&i));
         println!("Ffmpeg command: ffmpeg {}", args.join(" "));
 
@@ -89,7 +88,7 @@ mod test {
         let mut test_slice: Vec<Cow<'_, str>> = ["other_string", "{}", "other_string"].iter().map(|x| (*x).into()).collect();
 
         replace_in_vec(&mut test_slice, "{}", "replaced");
-        
+
         assert_eq!(test_slice[1], "replaced");
     }
 }
