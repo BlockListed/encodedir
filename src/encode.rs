@@ -23,16 +23,13 @@ use std::process::Command;
 
 fn no_copy_replace(string: &mut Cow<'_, str>, pattern: &str, replace: &str) {
     if string.contains(pattern) {
-        *string = string.to_mut().replace(pattern, replace).into();
+        *string = string.replace(pattern, replace).into();
     }
 }
 
-fn no_copy_replace_curry<'a>(
-    pattern: &'a str,
-    replace: &'a str,
-) -> impl FnMut(&mut Cow<'a, str>) + 'a {
-    move |string: &mut Cow<'a, str>| {
-        no_copy_replace(string, pattern, replace);
+fn replace_in_vec(data: &mut Vec<Cow<'_, str>>, pattern: &str, replace: &str) {
+    for i in data.iter_mut() {
+        no_copy_replace(i, pattern, replace);
     }
 }
 
@@ -59,7 +56,8 @@ pub fn encode(files: Vec<String>, cmd_args: &[&str]) {
 
     for i in files {
         let mut args = slice_of_str_to_vec_of_cow(cmd_args);
-        let _ = args.iter_mut().map(no_copy_replace_curry("{}", &i));
+        replace_in_vec(&mut args, "{}", &i);
+        println!("{}", i);
         args.push(create_name(&i));
         println!("Ffmpeg command: ffmpeg {}", args.join(" "));
 
@@ -69,5 +67,29 @@ pub fn encode(files: Vec<String>, cmd_args: &[&str]) {
             .stderr(std::process::Stdio::inherit())
             .output()
             .expect("Failed to execute ffmpeg");
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use std::borrow::Cow;
+
+    use super::{no_copy_replace, replace_in_vec};
+
+    #[test]
+    fn test_replace() {
+        let mut test_string: Cow<'_, str> = "{}".to_string().into();
+        no_copy_replace(&mut test_string, "{}", "replaced");
+
+        assert_eq!(test_string, "replaced");
+    }
+
+    #[test]
+    fn test_replace_slice() {
+        let mut test_slice: Vec<Cow<'_, str>> = ["other_string", "{}", "other_string"].iter().map(|x| (*x).into()).collect();
+
+        replace_in_vec(&mut test_slice, "{}", "replaced");
+        
+        assert_eq!(test_slice[1], "replaced");
     }
 }

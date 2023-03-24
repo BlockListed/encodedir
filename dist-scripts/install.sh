@@ -4,14 +4,14 @@ VERSION={version}
 NAME={name}
 EXEC={exec}
 
-if [ $1 == "uninstall" ]
+if [ "$1" -eq "uninstall" ]
 then
     echo "Uninstalling $NAME"
     rm -rf $PREFIX/bin/$EXEC
     exit
 fi
 
-if [ $1 == "help" ]
+if [ "$1" -eq "help" ]
 then
     echo "./install.sh uninstall to uninstall the program."
     echo "./install.sh or ./install.sh install to install the program."
