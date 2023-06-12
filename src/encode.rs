@@ -17,28 +17,32 @@
 */
 
 use std::borrow::Cow;
+use std::ffi::{OsStr, OsString};
 use std::fs::create_dir;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
-fn no_copy_replace(string: &mut Cow<'_, str>, pattern: &str, replace: &str) {
-    if string.contains(pattern) {
-        *string = string.replace(pattern, replace).into();
-    }
+fn replace_single_in_vec(data: &mut [Cow<OsStr>], pattern: &str, replace: &str) {
+    data
+        .iter_mut()
+        // Skip allocation, if it's not needed
+        .filter(|v| {
+            *v == OsStr::new("{}")
+        })
+        .for_each(|v| {
+            let s = v.to_str().unwrap();
+            let os_string: OsString = s.replace(pattern, replace).into();
+            *v = os_string.into();
+        });
 }
 
-fn replace_in_vec(data: &mut Vec<Cow<'_, str>>, pattern: &str, replace: &str) {
-    for i in data.iter_mut() {
-        no_copy_replace(i, pattern, replace);
-    }
-}
-
-fn create_name(filename: &str) -> Cow<'_, str> {
-    let path = Path::new(filename);
-    let mut name: String = String::from("./encoded/");
-    name.push_str(path.file_stem().unwrap().to_str().unwrap());
-    name.push_str(".mkv");
-    name.into()
+fn create_name(filename: impl AsRef<Path>) -> PathBuf {
+    let path = filename.as_ref();
+    let mut name = PathBuf::from("./encoded/");
+    let mut filename = OsString::from(path.file_name().unwrap());
+    filename.push(".mkv");
+    name.push(filename);
+    name
 }
 
 fn create_encoded() {
@@ -47,48 +51,30 @@ fn create_encoded() {
     }
 }
 
-fn slice_of_str_to_vec_of_cow<'a>(input: &'a [&str]) -> Vec<Cow<'a, str>> {
-    input.iter().map(|x| (*x).into()).collect::<Vec<_>>()
+fn slice_of_str_to_vec_of_cow<'a>(input: &'a [&str]) -> Vec<Cow<'a, OsStr>> {
+    input
+            .iter()
+            .map(|v| Cow::Borrowed(OsStr::new(*v)))
+            .collect()
 }
 
-pub fn encode(files: Vec<String>, cmd_args: &[&str]) {
+pub fn encode(files: Vec<impl AsRef<Path>>, cmd_args: &[&str]) {
     create_encoded();
 
     for i in files {
-        let mut args = slice_of_str_to_vec_of_cow(cmd_args);
-        replace_in_vec(&mut args, "{}", &i);
-        args.push(create_name(&i));
-        println!("Ffmpeg command: ffmpeg {}", args.join(" "));
+        let mut args: Vec<Cow<OsStr>> = slice_of_str_to_vec_of_cow(cmd_args);
+        replace_single_in_vec(&mut args, "{}", i.as_ref().to_str().unwrap());
+        args.push(create_name(&i).into_os_string().into());
+        println!(
+            "Ffmpeg command: ffmpeg {}",
+            args.join(OsStr::new(" ")).to_str().unwrap()
+        );
 
         let _command = Command::new("/usr/bin/ffmpeg")
-            .args(args.iter().map(Cow::as_ref))
+            .args(args)
             .stdout(std::process::Stdio::inherit())
             .stderr(std::process::Stdio::inherit())
             .output()
             .expect("Failed to execute ffmpeg");
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use std::borrow::Cow;
-
-    use super::{no_copy_replace, replace_in_vec};
-
-    #[test]
-    fn test_replace() {
-        let mut test_string: Cow<'_, str> = "{}".to_string().into();
-        no_copy_replace(&mut test_string, "{}", "replaced");
-
-        assert_eq!(test_string, "replaced");
-    }
-
-    #[test]
-    fn test_replace_slice() {
-        let mut test_slice: Vec<Cow<'_, str>> = ["other_string", "{}", "other_string"].iter().map(|x| (*x).into()).collect();
-
-        replace_in_vec(&mut test_slice, "{}", "replaced");
-
-        assert_eq!(test_slice[1], "replaced");
     }
 }
