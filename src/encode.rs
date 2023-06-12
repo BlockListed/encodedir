@@ -23,12 +23,9 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 fn replace_single_in_vec(data: &mut [Cow<OsStr>], pattern: &str, replace: &str) {
-    data
-        .iter_mut()
+    data.iter_mut()
         // Skip allocation, if it's not needed
-        .filter(|v| {
-            *v == OsStr::new("{}")
-        })
+        .filter(|v| *v == OsStr::new("{}"))
         .for_each(|v| {
             let s = v.to_str().unwrap();
             let os_string: OsString = s.replace(pattern, replace).into();
@@ -53,9 +50,9 @@ fn create_encoded() {
 
 fn slice_of_str_to_vec_of_cow<'a>(input: &'a [&str]) -> Vec<Cow<'a, OsStr>> {
     input
-            .iter()
-            .map(|v| Cow::Borrowed(OsStr::new(*v)))
-            .collect()
+        .iter()
+        .map(|v| Cow::Borrowed(OsStr::new(*v)))
+        .collect()
 }
 
 pub fn encode(files: Vec<impl AsRef<Path>>, cmd_args: &[&str]) {

@@ -37,10 +37,8 @@ pub fn get_files(p: impl AsRef<Path>, filetypes: &Vec<String>) -> Vec<PathBuf> {
             continue;
         }
         let extension: String = match filepath.extension() {
-            Some(v) => {
-                v.to_str().unwrap().to_string()
-            },
-            None => continue
+            Some(v) => v.to_str().unwrap().to_string(),
+            None => continue,
         };
 
         if filetypes.iter().any(|v| v == &extension) {

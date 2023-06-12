@@ -39,17 +39,17 @@ fn main() -> color_eyre::Result<()> {
 
     if args.contains("--help") {
         print_help();
-        return Ok(())
+        return Ok(());
     }
 
     if args.contains("--warranty") {
         write_str(statements::WARRANTY);
-        return Ok(())
+        return Ok(());
     }
 
     if args.contains("--distribute") {
         write_str(statements::DISTRIBUTON);
-        return Ok(())
+        return Ok(());
     }
 
     let Ok(patharg) = args.free_from_str::<String>() else {
@@ -60,14 +60,19 @@ fn main() -> color_eyre::Result<()> {
     let path = std::path::Path::new(&patharg);
     if !(path.exists()) {
         print_help();
-        return Err(color_eyre::Report::msg("Path doesn't exist!"))
+        return Err(color_eyre::Report::msg("Path doesn't exist!"));
     }
 
     let files = get_files::get_files(&patharg, &config.ftypes);
 
     encode::encode(
         files,
-        config.command_args.iter().map(String::as_str).collect::<Vec<_>>().as_slice(),
+        config
+            .command_args
+            .iter()
+            .map(String::as_str)
+            .collect::<Vec<_>>()
+            .as_slice(),
     );
 
     Ok(())
