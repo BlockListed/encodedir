@@ -44,10 +44,10 @@ pub fn encode(files: &[impl AsRef<Path>], cmd_args: &[String], format: &str) {
         let mut command = Command::new("/usr/bin/ffmpeg");
 
         command
-            .args(cmd_args)
             .arg("-y")
             .arg("-i")
             .arg(i.as_ref())
+            .args(cmd_args)
             .arg("-f")
             .arg(format)
             .arg(output);
