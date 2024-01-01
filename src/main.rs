@@ -1,6 +1,6 @@
 use std::{io::Write, path::PathBuf};
 
-use clap::{Command, Arg, ArgAction};
+use clap::{Arg, ArgAction, Command};
 
 /*
 /Encodedir: Encode all video files in a directory using the systems installed ffmpeg
@@ -29,24 +29,28 @@ fn write_str(data: &str) {
     println!();
 }
 
-fn print_help() {
-    write_str(statements::HELP);
-}
-
 fn main() -> clap::error::Result<()> {
     let config = read_cfg::get_config();
 
     let mut command = Command::new(clap::crate_name!())
-        .arg(Arg::new("warranty")
-            .long("warranty")
-            .action(ArgAction::SetTrue))
-        .arg(Arg::new("distribute")
-            .long("distribute")
-            .action(ArgAction::SetTrue))
-        .arg(Arg::new("source dir")
-            .required(true)
-            .value_parser(clap::value_parser!(PathBuf))
-            .index(1));
+        .before_help(statements::BEFORE_HELP)
+        .arg(
+            Arg::new("warranty")
+                .long("warranty")
+                .action(ArgAction::SetTrue),
+        )
+        .arg(
+            Arg::new("distribute")
+                .long("distribute")
+                .action(ArgAction::SetTrue),
+        )
+        .arg(
+            Arg::new("source dir")
+                .required_unless_present("warranty")
+                .required_unless_present("distribute")
+                .value_parser(clap::value_parser!(PathBuf))
+                .index(1),
+        );
 
     let args = command.clone().get_matches();
 
@@ -63,16 +67,17 @@ fn main() -> clap::error::Result<()> {
     let path = args.get_one::<PathBuf>("source dir").unwrap();
 
     if !path.exists() {
-        command.error(clap::error::ErrorKind::Io, "source directory does not exist").exit();
+        command
+            .error(
+                clap::error::ErrorKind::Io,
+                "source directory does not exist",
+            )
+            .exit();
     }
 
     let files = get_files::get_files(&path, &config.ftypes);
 
-    encode::encode(
-        &files,
-        &config.command_args,
-        &config.format
-    );
+    encode::encode(&files, &config.command_args, &config.format);
 
     Ok(())
 }
