@@ -45,6 +45,7 @@ pub fn encode(files: &[impl AsRef<Path>], cmd_args: &[String], format: &str) {
 
         command
             .args(cmd_args)
+            .arg("-y")
             .arg("-i")
             .arg(i.as_ref())
             .arg("-f")
