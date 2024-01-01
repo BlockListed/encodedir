@@ -1,4 +1,4 @@
-use std::io::Write;
+use std::{io::Write, path::PathBuf};
 
 /*
 /Encodedir: Encode all video files in a directory using the systems installed ffmpeg
@@ -52,27 +52,22 @@ fn main() -> color_eyre::Result<()> {
         return Ok(());
     }
 
-    let Ok(patharg) = args.free_from_str::<String>() else {
+    let Ok(path) = args.free_from_str::<PathBuf>() else {
         print_help();
         return Err(color_eyre::Report::msg("Path argument missing!"))
     };
 
-    let path = std::path::Path::new(&patharg);
     if !(path.exists()) {
         print_help();
         return Err(color_eyre::Report::msg("Path doesn't exist!"));
     }
 
-    let files = get_files::get_files(&patharg, &config.ftypes);
+    let files = get_files::get_files(&path, &config.ftypes);
 
     encode::encode(
-        files,
-        config
-            .command_args
-            .iter()
-            .map(String::as_str)
-            .collect::<Vec<_>>()
-            .as_slice(),
+        &files,
+        &config.command_args,
+        &config.format
     );
 
     Ok(())

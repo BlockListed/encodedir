@@ -16,30 +16,17 @@
 /along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use std::borrow::Cow;
-use std::ffi::{OsStr, OsString};
 use std::fs::create_dir;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-fn replace_single_in_vec(data: &mut [Cow<OsStr>], pattern: &str, replace: &str) {
-    data.iter_mut()
-        // Skip allocation, if it's not needed
-        .filter(|v| *v == OsStr::new("{}"))
-        .for_each(|v| {
-            let s = v.to_str().unwrap();
-            let os_string: OsString = s.replace(pattern, replace).into();
-            *v = os_string.into();
-        });
-}
-
-fn create_name(filename: impl AsRef<Path>) -> PathBuf {
-    let path = filename.as_ref();
-    let mut name = PathBuf::from("./encoded/");
-    let mut filename = OsString::from(path.file_name().unwrap());
-    filename.push(".mkv");
-    name.push(filename);
-    name
+fn create_name(original_path: impl AsRef<Path>, format: &str) -> PathBuf {
+    let mut path = PathBuf::from("./encoded/");
+    let mut filename = original_path.as_ref().file_name().unwrap().to_owned();
+    filename.push(".");
+    filename.push(format);
+    path.push(filename);
+    path
 }
 
 fn create_encoded() {
@@ -48,27 +35,29 @@ fn create_encoded() {
     }
 }
 
-fn slice_of_str_to_vec_of_cow<'a>(input: &'a [&str]) -> Vec<Cow<'a, OsStr>> {
-    input
-        .iter()
-        .map(|v| Cow::Borrowed(OsStr::new(*v)))
-        .collect()
-}
-
-pub fn encode(files: Vec<impl AsRef<Path>>, cmd_args: &[&str]) {
+pub fn encode(files: &[impl AsRef<Path>], cmd_args: &[String], format: &str) {
     create_encoded();
 
     for i in files {
-        let mut args: Vec<Cow<OsStr>> = slice_of_str_to_vec_of_cow(cmd_args);
-        replace_single_in_vec(&mut args, "{}", i.as_ref().to_str().unwrap());
-        args.push(create_name(&i).into_os_string().into());
+        let output = create_name(&i, format);
+
+        let mut command = Command::new("/usr/bin/ffmpeg");
+
+        command
+            .args(cmd_args)
+            .arg("-i")
+            .arg(i.as_ref())
+            .arg("-f")
+            .arg(format)
+            .arg(output);
+
         println!(
-            "Ffmpeg command: ffmpeg {}",
-            args.join(OsStr::new(" ")).to_str().unwrap()
+            "Ffmpeg command: {} {}",
+            command.get_program().to_string_lossy(),
+            command.get_args().map(|s| s.to_string_lossy()).collect::<Vec<_>>().join(" "),
         );
 
-        let _command = Command::new("/usr/bin/ffmpeg")
-            .args(args)
+        command
             .stdout(std::process::Stdio::inherit())
             .stderr(std::process::Stdio::inherit())
             .output()

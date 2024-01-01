@@ -27,6 +27,7 @@ use serde::{Deserialize, Serialize};
 pub struct Config {
     pub command_args: Vec<String>,
     pub ftypes: Vec<String>,
+    pub format: String,
 }
 
 // Function to create a new config
@@ -35,8 +36,6 @@ fn create_config(p: &str) {
     let data = toml::toml! {
         command_args = [
             "-y",
-            "-i",
-            "{}",
             "-c:v",
             "hevc_nvenc",
             "-rc",
@@ -45,8 +44,6 @@ fn create_config(p: &str) {
             "10",
             "-qmax",
             "35",
-            "-f",
-            "mp4",
         ]
 
         ftypes = [
