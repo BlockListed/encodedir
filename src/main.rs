@@ -1,5 +1,7 @@
 use std::{io::Write, path::PathBuf};
 
+use clap::{Command, Arg, ArgAction};
+
 /*
 /Encodedir: Encode all video files in a directory using the systems installed ffmpeg
 /Copyright (C) 2021  BlockListed
@@ -31,35 +33,37 @@ fn print_help() {
     write_str(statements::HELP);
 }
 
-fn main() -> color_eyre::Result<()> {
-    color_eyre::install()?;
+fn main() -> clap::error::Result<()> {
     let config = read_cfg::get_config();
 
-    let mut args = pico_args::Arguments::from_env();
+    let mut command = Command::new(clap::crate_name!())
+        .arg(Arg::new("warranty")
+            .long("warranty")
+            .action(ArgAction::SetTrue))
+        .arg(Arg::new("distribute")
+            .long("distribute")
+            .action(ArgAction::SetTrue))
+        .arg(Arg::new("source dir")
+            .required(true)
+            .value_parser(clap::value_parser!(PathBuf))
+            .index(1));
 
-    if args.contains("--help") {
-        print_help();
-        return Ok(());
-    }
+    let args = command.clone().get_matches();
 
-    if args.contains("--warranty") {
+    if args.get_flag("warranty") {
         write_str(statements::WARRANTY);
         return Ok(());
     }
 
-    if args.contains("--distribute") {
+    if args.get_flag("distribute") {
         write_str(statements::DISTRIBUTON);
         return Ok(());
     }
 
-    let Ok(path) = args.free_from_str::<PathBuf>() else {
-        print_help();
-        return Err(color_eyre::Report::msg("Path argument missing!"))
-    };
+    let path = args.get_one::<PathBuf>("source dir").unwrap();
 
-    if !(path.exists()) {
-        print_help();
-        return Err(color_eyre::Report::msg("Path doesn't exist!"));
+    if !path.exists() {
+        command.error(clap::error::ErrorKind::Io, "source directory does not exist").exit();
     }
 
     let files = get_files::get_files(&path, &config.ftypes);
