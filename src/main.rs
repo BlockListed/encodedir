@@ -50,6 +50,18 @@ fn main() -> clap::error::Result<()> {
                 .required_unless_present("distribute")
                 .value_parser(clap::value_parser!(PathBuf))
                 .index(1),
+        )
+        .arg(
+            Arg::new("arguments")
+                .long("args")
+                .short('c')
+                .long_help("arguments which replace the configured arguments. ex: `-c \"-c:v x265 -crf 30\"`")
+        )
+        .arg(
+            Arg::new("additional arguments")
+                .long("additional-args")
+                .short('a')
+                .long_help("arguments which are added to the configured arguments. ex: `-a \"-map 0:a:language:eng\"`")
         );
 
     let args = command.clone().get_matches();
@@ -77,7 +89,17 @@ fn main() -> clap::error::Result<()> {
 
     let files = get_files::get_files(&path, &config.ftypes);
 
-    encode::encode(&files, &config.command_args, &config.format);
+    let mut command_args = config.command_args;
+
+    if let Some(args) = args.get_one::<String>("arguments") {
+        command_args = args.split(' ').map(|s| s.to_owned()).collect();
+    }
+
+    if let Some(additional) = args.get_one::<String>("additional arguments") {
+        command_args.extend(additional.split(' ').map(|s| s.to_owned()));
+    }
+
+    encode::encode(&files, &command_args, &config.format);
 
     Ok(())
 }
