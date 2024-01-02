@@ -22,7 +22,7 @@ use std::process::Command;
 
 fn create_name(original_path: impl AsRef<Path>, format: &str) -> PathBuf {
     let mut path = PathBuf::from("./encoded/");
-    let mut filename = original_path.as_ref().file_name().unwrap().to_owned();
+    let mut filename = original_path.as_ref().file_stem().unwrap().to_owned();
     filename.push(".");
     let extension = get_format_extension(format);
     filename.push(extension);
