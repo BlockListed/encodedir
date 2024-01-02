@@ -24,7 +24,8 @@ fn create_name(original_path: impl AsRef<Path>, format: &str) -> PathBuf {
     let mut path = PathBuf::from("./encoded/");
     let mut filename = original_path.as_ref().file_name().unwrap().to_owned();
     filename.push(".");
-    filename.push(format);
+    let extension = get_format_extension(format);
+    filename.push(extension);
     path.push(filename);
     path
 }
@@ -32,6 +33,13 @@ fn create_name(original_path: impl AsRef<Path>, format: &str) -> PathBuf {
 fn create_encoded() {
     if !(Path::new("./encoded").is_dir()) {
         create_dir("./encoded").unwrap();
+    }
+}
+
+fn get_format_extension(format: &str) -> &str {
+    match format {
+        "matroska" => "mkv",
+        f => f,
     }
 }
 
