@@ -92,11 +92,11 @@ fn main() -> clap::error::Result<()> {
     let mut command_args = config.command_args;
 
     if let Some(args) = args.get_one::<String>("arguments") {
-        command_args = args.split(' ').map(|s| s.to_owned()).collect();
+        command_args = shell_words::split(args).expect("couldn't parse arguments parameter");
     }
 
     if let Some(additional) = args.get_one::<String>("additional arguments") {
-        command_args.extend(additional.split(' ').map(|s| s.to_owned()));
+        command_args.extend(shell_words::split(additional).expect("couldn't parse additional arguments parameter"));
     }
 
     encode::encode(&files, &command_args, &config.format);
